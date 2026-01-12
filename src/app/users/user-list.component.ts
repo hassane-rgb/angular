@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from './user.service';
 
@@ -18,9 +18,8 @@ import { UserService } from './user.service';
   `
 })
 export class UserListComponent {
+  private userService = inject(UserService);
   users = this.userService.users;
-
-  constructor(private userService: UserService) {}
 
   remove(id: number) {
     this.userService.removeUser(id);
