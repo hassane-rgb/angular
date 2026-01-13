@@ -1,12 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from './user.service';
+import { UserFormComponent } from './user-form.component';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UserFormComponent],
   template: `
+    <app-user-form />
+
     <h2>Users</h2>
 
     <ul>
