@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from './user.service';
+import { RouterLink } from '@angular/router';
 import { UserFormComponent } from './user-form.component';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, UserFormComponent],
+  imports: [CommonModule, UserFormComponent, RouterLink],
   template: `
     <app-user-form />
 
@@ -14,7 +15,7 @@ import { UserFormComponent } from './user-form.component';
 
     <ul>
       <li *ngFor="let user of users()">
-        {{ user.name }} ({{ user.email }})
+        <a [routerLink]="['/users', user.id]">{{ user.name }} ({{ user.email }})</a>
         <button (click)="remove(user.id)">❌</button>
       </li>
     </ul>
