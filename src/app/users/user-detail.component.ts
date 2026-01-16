@@ -23,6 +23,7 @@ export class UserDetailComponent {
   private userId = Number(this.route.snapshot.paramMap.get('id'));
 
   user = computed(() => {
+    // @TODO: avoid signal writes inside computed (NG0600)
     this.store.selectUser(this.userId);
     return this.store.selectedUser();
   });
