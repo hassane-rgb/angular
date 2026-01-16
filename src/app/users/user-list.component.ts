@@ -1,31 +1,41 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from './user.service';
 import { RouterLink } from '@angular/router';
 import { UserFormComponent } from './user-form.component';
+import { UserStore } from './user.store';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, UserFormComponent, RouterLink],
+  imports: [CommonModule, RouterLink, UserFormComponent],
   template: `
     <app-user-form />
 
     <h2>Users</h2>
 
-    <ul>
-      <li *ngFor="let user of users()">
-        <a [routerLink]="['/users', user.id]">{{ user.name }} ({{ user.email }})</a>
-        <button (click)="remove(user.id)">❌</button>
-      </li>
-    </ul>
+    @if (store.hasUsers()) {
+      <ul>
+        @for (user of store.users(); track user.id) {
+          <li>
+            <a
+              [routerLink]="['/users', user.id]"
+              (click)="store.selectUser(user.id)"
+            >
+              {{ user.name }} ({{ user.email }})
+            </a>
+            <button (click)="remove(user.id)">❌</button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p>No users yet</p>
+    }
   `
 })
 export class UserListComponent {
-  private userService = inject(UserService);
-  users = this.userService.users;
+  store = inject(UserStore);
 
   remove(id: number) {
-    this.userService.removeUser(id);
+    this.store.removeUser(id);
   }
 }
