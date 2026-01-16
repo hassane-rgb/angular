@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { userDetailResolver } from './users/user-detail.resolver';
 
 export const routes: Routes = [
   {
@@ -13,11 +14,15 @@ export const routes: Routes = [
         .then(m => m.UserListComponent)
   },
   {
-    path: 'users/:id',
+  path: 'users/:id',
+    resolve: {
+      user: userDetailResolver
+    },
     loadComponent: () =>
       import('./users/user-detail.component')
         .then(m => m.UserDetailComponent)
-  },
+}
+,
   {
     path: '**',
     redirectTo: 'users',

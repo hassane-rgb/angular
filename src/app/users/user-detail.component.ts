@@ -17,14 +17,6 @@ import { UserStore } from './user.store';
   `
 })
 export class UserDetailComponent {
-  private route = inject(ActivatedRoute);
-  private store = inject(UserStore);
-
-  private userId = Number(this.route.snapshot.paramMap.get('id'));
-
-  user = computed(() => {
-    // @TODO: avoid signal writes inside computed (NG0600)
-    this.store.selectUser(this.userId);
-    return this.store.selectedUser();
-  });
+  store = inject(UserStore);
+  user = this.store.selectedUser;
 }
