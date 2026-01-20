@@ -10,9 +10,14 @@ export class UserStore {
   // ===== SELECTORS (computed) =====
   readonly users = this._users.asReadonly();
 
-  readonly selectedUser = computed(() =>
-    this._users().find(u => u.id === this._selectedUserId())
-  );
+  readonly selectedUser = computed(() => {
+    const id = this._selectedUserId();
+    if (id === null) {
+      return null;
+    }
+
+    return this._users().find(u => u.id === id) ?? null;
+  });
 
   readonly hasUsers = computed(() =>
     this._users().length > 0

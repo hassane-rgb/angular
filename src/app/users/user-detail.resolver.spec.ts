@@ -5,7 +5,6 @@ import {
 } from '@angular/router';
 import { userDetailResolver } from './user-detail.resolver';
 import { UserStore } from './user.store';
-import { runInInjectionContext } from '@angular/core';
 import { vi } from 'vitest';
 
 describe('userDetailResolver', () => {
@@ -23,7 +22,7 @@ describe('userDetailResolver', () => {
 
     const state = {} as RouterStateSnapshot;
 
-    runInInjectionContext(TestBed.injector, () => {
+    TestBed.runInInjectionContext(() => {
       userDetailResolver(route, state);
     });
 
