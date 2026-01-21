@@ -1,5 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, effect } from '@angular/core';
 import { User } from './user.model';
+
+const STORAGE_KEY = 'user-store';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
@@ -10,18 +12,49 @@ export class UserStore {
   // ===== SELECTORS (computed) =====
   readonly users = this._users.asReadonly();
 
-  readonly selectedUser = computed(() => {
+  readonly selectedUser = computed<User | null>(() => {
     const id = this._selectedUserId();
-    if (id === null) {
-      return null;
-    }
+    if (id === null) return null;
 
     return this._users().find(u => u.id === id) ?? null;
   });
 
-  readonly hasUsers = computed(() =>
-    this._users().length > 0
-  );
+  readonly hasUsers = computed(() => this._users().length > 0);
+
+  // ===== INIT + EFFECTS =====
+  constructor() {
+    // 🔹 LOAD from localStorage (once)
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const { users, selectedUserId } = JSON.parse(saved);
+        this._users.set(users ?? []);
+        this._selectedUserId.set(selectedUserId ?? null);
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    // 🔹 SAVE to localStorage (reactive)
+    effect(() => {
+      const snapshot = {
+        users: this._users(),
+        selectedUserId: this._selectedUserId(),
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    });
+
+    // 🔹 AUTO-CLEAR selection if user removed
+    effect(() => {
+      const selectedId = this._selectedUserId();
+      if (
+        selectedId !== null &&
+        !this._users().some(u => u.id === selectedId)
+      ) {
+        this._selectedUserId.set(null);
+      }
+    });
+  }
 
   // ===== ACTIONS =====
   addUser(user: User) {
