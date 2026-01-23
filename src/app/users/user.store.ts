@@ -24,37 +24,42 @@ export class UserStore {
   // ===== INIT + EFFECTS =====
   constructor() {
     // 🔹 LOAD from localStorage (once)
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const { users, selectedUserId } = JSON.parse(saved);
-        this._users.set(users ?? []);
-        this._selectedUserId.set(selectedUserId ?? null);
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
-      }
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      const { users, selectedUserId } = JSON.parse(saved);
+      this._users.set(users ?? []);
+      this._selectedUserId.set(selectedUserId ?? null);
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
     }
+  }
 
     // 🔹 SAVE to localStorage (reactive)
-    effect(() => {
-      const snapshot = {
-        users: this._users(),
-        selectedUserId: this._selectedUserId(),
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
-    });
+  effect(() => {
+    this.persist();
+  });
 
     // 🔹 AUTO-CLEAR selection if user removed
-    effect(() => {
-      const selectedId = this._selectedUserId();
-      if (
-        selectedId !== null &&
-        !this._users().some(u => u.id === selectedId)
-      ) {
-        this._selectedUserId.set(null);
-      }
-    });
-  }
+  effect(() => {
+    const selectedId = this._selectedUserId();
+    if (
+      selectedId !== null &&
+      !this._users().some(u => u.id === selectedId)
+    ) {
+      this._selectedUserId.set(null);
+    }
+  });
+}
+
+private persist() {
+  const snapshot = {
+    users: this._users(),
+    selectedUserId: this._selectedUserId(),
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+}
+
 
   // ===== ACTIONS =====
   addUser(user: User) {

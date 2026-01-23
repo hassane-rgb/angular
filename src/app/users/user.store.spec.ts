@@ -47,6 +47,9 @@ describe('UserStore', () => {
   it('should persist users to localStorage', () => {
     store.addUser(user1);
 
+    // 🔥 force un read pour déclencher effect
+    store.users();
+
     const raw = localStorage.getItem('user-store');
     expect(raw).toBeTruthy();
 
@@ -66,6 +69,7 @@ describe('UserStore', () => {
 
     // recreate store
     store = TestBed.inject(UserStore);
+    store.users(); // 🔥 déclenche computed/effects
 
     expect(store.users().length).toBe(1);
     expect(store.selectedUser()?.name).toBe('Alice');
