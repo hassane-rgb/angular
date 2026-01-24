@@ -6,11 +6,18 @@ import {
 import { userDetailResolver } from './user-detail.resolver';
 import { UserStore } from './user.store';
 import { vi } from 'vitest';
+import { LOAD_USERS } from './user.loader';
 
 describe('userDetailResolver', () => {
   it('should select user from route param', () => {
     TestBed.configureTestingModule({
-      providers: [UserStore],
+      providers: [
+        UserStore,
+        {
+          provide: LOAD_USERS,
+          useValue: () => Promise.resolve([]), // 👈 fake minimal
+        },
+      ],
     });
 
     const store = TestBed.inject(UserStore);
