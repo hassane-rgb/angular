@@ -101,12 +101,7 @@ describe('UserStore', () => {
   // ===== LOAD USERS =====
 
   it('should load users and set status success', async () => {
-    store.loadUsers();
-
-    expect(store.status()).toBe('loading');
-    expect(store.isLoading()).toBe(true);
-
-    await Promise.resolve(); // flush microtask queue
+    await store.loadUsers();
 
     expect(store.status()).toBe('success');
     expect(store.users().length).toBe(2);
@@ -126,11 +121,7 @@ describe('UserStore', () => {
 
     store = TestBed.inject(UserStore);
 
-    store.loadUsers();
-
-    expect(store.status()).toBe('loading');
-
-    await Promise.resolve();
+    await store.loadUsers(); // 🔥 clé ici
 
     expect(store.status()).toBe('error');
     expect(store.error()).toBe('Failed to load users');

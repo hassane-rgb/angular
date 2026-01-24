@@ -25,20 +25,20 @@ export class UserStore {
   readonly hasError = computed(() => this._status() === 'error');
 
   // ===== actions =====
-  loadUsers() {
-    this._status.set('loading');
-    this._error.set(null);
+  loadUsers(): Promise<void> {
+  this._status.set('loading');
+  this._error.set(null);
 
-    this.loadUsersFn()
-      .then(users => {
-        this._users.set(users);
-        this._status.set('success');
-      })
-      .catch(() => {
-        this._error.set('Failed to load users');
-        this._status.set('error');
-      });
-  }
+  return this.loadUsersFn()
+    .then(users => {
+      this._users.set(users);
+      this._status.set('success');
+    })
+    .catch(() => {
+      this._error.set('Failed to load users');
+      this._status.set('error');
+    });
+}
 
   readonly selectedUser = computed<User | null>(() => {
     const id = this._selectedUserId();
