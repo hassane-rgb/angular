@@ -1,20 +1,23 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { User } from './user.model';
-import { LOAD_USERS, LoadUsersFn } from './user.loader';
+import { USERS_LOADER } from './users.loader';
 
 const STORAGE_KEY = 'user-store';
+
+type Status = 'idle' | 'loading' | 'success' | 'error';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
   // ===== dependencies =====
-  private readonly loadUsersFn = inject<LoadUsersFn>(LOAD_USERS);
+  private readonly loader = inject(USERS_LOADER);
 
   // ===== STATE =====
   private readonly _users = signal<User[]>([]);
   private readonly _selectedUserId = signal<number | null>(null);
 
-  private readonly _status = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
+  private readonly _status = signal<Status>('idle');
   private readonly _error = signal<string | null>(null);
+
 
   // ===== SELECTORS (computed) =====
   readonly users  = this._users.asReadonly();
@@ -23,31 +26,29 @@ export class UserStore {
 
   readonly isLoading = computed(() => this._status() === 'loading');
   readonly hasError = computed(() => this._status() === 'error');
-
-  // ===== actions =====
-  loadUsers(): Promise<void> {
-  this._status.set('loading');
-  this._error.set(null);
-
-  return this.loadUsersFn()
-    .then(users => {
-      this._users.set(users);
-      this._status.set('success');
-    })
-    .catch(() => {
-      this._error.set('Failed to load users');
-      this._status.set('error');
-    });
-}
-
   readonly selectedUser = computed<User | null>(() => {
     const id = this._selectedUserId();
     return id === null
       ? null
       : this._users().find(u => u.id === id) ?? null;
   });
-
   readonly hasUsers = computed(() => this._users().length > 0);
+
+  // ===== actions =====
+  async loadUsers() {
+    this._status.set('loading');
+    this._error.set(null);
+
+    try {
+      const users = await this.loader.load();
+      this._users.set(users);
+      this._status.set('success');
+    } catch {
+      this._users.set([]);
+      this._status.set('error');
+      this._error.set('Failed to load users');
+    }
+  }
 
   // ===== INIT + EFFECTS =====
   constructor() {
@@ -95,9 +96,10 @@ export class UserStore {
   }
 
   removeUser(id: number) {
-    this._users.update(users =>
-      users.filter(u => u.id !== id)
-    );
+    this._users.update(users => users.filter(u => u.id !== id));
+    if (this._selectedUserId() === id) {
+      this._selectedUserId.set(null);
+    }
   }
 
   selectUser(id: number) {

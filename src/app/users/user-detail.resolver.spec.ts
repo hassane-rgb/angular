@@ -6,7 +6,7 @@ import {
 import { userDetailResolver } from './user-detail.resolver';
 import { UserStore } from './user.store';
 import { vi } from 'vitest';
-import { LOAD_USERS } from './user.loader';
+import { USERS_LOADER } from './users.loader';
 
 describe('userDetailResolver', () => {
   it('should select user from route param', () => {
@@ -14,7 +14,7 @@ describe('userDetailResolver', () => {
       providers: [
         UserStore,
         {
-          provide: LOAD_USERS,
+          provide: USERS_LOADER,
           useValue: () => Promise.resolve([]), // 👈 fake minimal
         },
       ],

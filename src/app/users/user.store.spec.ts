@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { UserStore } from './user.store';
 import { User } from './user.model';
-import { LOAD_USERS } from './user.loader';
+import { USERS_LOADER } from './users.loader';
 
 describe('UserStore', () => {
   let store: UserStore;
@@ -13,7 +13,7 @@ describe('UserStore', () => {
     TestBed.configureTestingModule({
       providers: [
         {
-          provide: LOAD_USERS,
+          provide: USERS_LOADER,
           useValue: () => Promise.resolve([user1, user2]),
         },
       ],
@@ -86,7 +86,7 @@ describe('UserStore', () => {
     TestBed.configureTestingModule({
       providers: [
         {
-          provide: LOAD_USERS,
+          provide: USERS_LOADER,
           useValue: () => Promise.resolve([]),
         },
       ],
@@ -113,7 +113,7 @@ describe('UserStore', () => {
     TestBed.configureTestingModule({
       providers: [
         {
-          provide: LOAD_USERS,
+          provide: USERS_LOADER,
           useValue: () => Promise.reject('boom'),
         },
       ],
