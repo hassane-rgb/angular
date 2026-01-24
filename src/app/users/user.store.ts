@@ -1,16 +1,44 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import { User } from './user.model';
+import { LOAD_USERS, LoadUsersFn } from './user.loader';
 
 const STORAGE_KEY = 'user-store';
 
 @Injectable({ providedIn: 'root' })
 export class UserStore {
+  // ===== dependencies =====
+  private readonly loadUsersFn = inject<LoadUsersFn>(LOAD_USERS);
+
   // ===== STATE =====
   private readonly _users = signal<User[]>([]);
   private readonly _selectedUserId = signal<number | null>(null);
 
+  private readonly _status = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
+  private readonly _error = signal<string | null>(null);
+
   // ===== SELECTORS (computed) =====
-  readonly users = this._users.asReadonly();
+  readonly users  = this._users.asReadonly();
+  readonly status = this._status.asReadonly();
+  readonly error  = this._error.asReadonly();
+
+  readonly isLoading = computed(() => this._status() === 'loading');
+  readonly hasError = computed(() => this._status() === 'error');
+
+  // ===== actions =====
+  loadUsers() {
+    this._status.set('loading');
+    this._error.set(null);
+
+    this.loadUsersFn()
+      .then(users => {
+        this._users.set(users);
+        this._status.set('success');
+      })
+      .catch(() => {
+        this._error.set('Failed to load users');
+        this._status.set('error');
+      });
+  }
 
   readonly selectedUser = computed<User | null>(() => {
     const id = this._selectedUserId();

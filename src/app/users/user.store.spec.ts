@@ -1,29 +1,42 @@
 import { TestBed } from '@angular/core/testing';
 import { UserStore } from './user.store';
 import { User } from './user.model';
+import { LOAD_USERS } from './user.loader';
 
 describe('UserStore', () => {
   let store: UserStore;
 
-  const user1: User = { id: 1, name: 'Alice', email: 'Alice@test.com' };
-  const user2: User = { id: 2, name: 'Bob', email: 'Bob@test.com' };
+  const user1: User = { id: 1, name: 'Alice', email: 'alice@test.com' };
+  const user2: User = { id: 2, name: 'Bob', email: 'bob@test.com' };
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: LOAD_USERS,
+          useValue: () => Promise.resolve([user1, user2]),
+        },
+      ],
+    });
+
     localStorage.clear();
     store = TestBed.inject(UserStore);
   });
 
+  // ===== BASIC STATE =====
+
   it('should start with empty users', () => {
     expect(store.users().length).toBe(0);
     expect(store.selectedUser()).toBeNull();
+    expect(store.status()).toBe('idle');
   });
+
+  // ===== CRUD =====
 
   it('should add users', () => {
     store.addUser(user1);
     store.addUser(user2);
 
-    expect(store.users().length).toBe(2);
     expect(store.users()).toEqual([user1, user2]);
   });
 
@@ -44,10 +57,12 @@ describe('UserStore', () => {
     expect(store.selectedUser()).toBeNull();
   });
 
+  // ===== PERSISTENCE =====
+
   it('should persist users to localStorage', () => {
     store.addUser(user1);
 
-    // 🔥 appel explicite de l’action
+    // 🔥 appel explicite de l’action, volontaire et testable
     store.persist();
 
     const raw = localStorage.getItem('user-store');
@@ -68,7 +83,14 @@ describe('UserStore', () => {
     );
 
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: LOAD_USERS,
+          useValue: () => Promise.resolve([]),
+        },
+      ],
+    });
 
     store = TestBed.inject(UserStore);
 
@@ -76,4 +98,42 @@ describe('UserStore', () => {
     expect(store.selectedUser()?.name).toBe('Alice');
   });
 
+  // ===== LOAD USERS =====
+
+  it('should load users and set status success', async () => {
+    store.loadUsers();
+
+    expect(store.status()).toBe('loading');
+    expect(store.isLoading()).toBe(true);
+
+    await Promise.resolve(); // flush microtask queue
+
+    expect(store.status()).toBe('success');
+    expect(store.users().length).toBe(2);
+    expect(store.error()).toBeNull();
+  });
+
+  it('should set error status when loading fails', async () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: LOAD_USERS,
+          useValue: () => Promise.reject('boom'),
+        },
+      ],
+    });
+
+    store = TestBed.inject(UserStore);
+
+    store.loadUsers();
+
+    expect(store.status()).toBe('loading');
+
+    await Promise.resolve();
+
+    expect(store.status()).toBe('error');
+    expect(store.error()).toBe('Failed to load users');
+    expect(store.users().length).toBe(0);
+  });
 });
