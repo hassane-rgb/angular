@@ -6,7 +6,7 @@ import {
 import { userDetailResolver } from './user-detail.resolver';
 import { UserStore } from './data/user.store';
 import { vi } from 'vitest';
-import { USERS_LOADER } from './users.loader';
+import { USERS_LOADER } from './data/users.loader';
 
 describe('userDetailResolver', () => {
   it('should select user from route param', async () => {

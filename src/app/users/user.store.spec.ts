@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { UserStore } from './data/user.store';
-import { User } from './user.model';
-import { USERS_LOADER } from './users.loader';
+import { User } from './data/user.model';
+import { USERS_LOADER } from './data/users.loader';
 
 describe('UserStore', () => {
   let store: UserStore;

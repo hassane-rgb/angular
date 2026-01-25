@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { userDetailResolver } from './users/user-detail.resolver';
+import { userDetailResolver } from './users/resolvers/user-detail.resolver';
 
 export const routes: Routes = [
   {
@@ -10,22 +10,21 @@ export const routes: Routes = [
   {
     path: 'users',
     loadComponent: () =>
-      import('./users/user-list.component')
-        .then(m => m.UserListComponent)
-  },
-  {
-  path: 'users/:id',
-    resolve: {
-      user: userDetailResolver
-    },
-    loadComponent: () =>
-      import('./users/user-detail.component')
-        .then(m => m.UserDetailComponent)
-}
-,
+      import('./users/pages/users-page.component')
+        .then(m => m.UsersPageComponent),
+    children: [
+      {
+        path: ':id',
+        resolve: { user: userDetailResolver },
+        loadComponent: () =>
+          import('./users/ui/user-detail/user-detail.component')
+            .then(m => m.UserDetailComponent)
+      }
+    ]
+  }
+  ,
   {
     path: '**',
-    redirectTo: 'users',
-    pathMatch: 'full'
+    redirectTo: 'users'
   }
 ];

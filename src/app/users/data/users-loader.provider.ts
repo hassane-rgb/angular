@@ -1,5 +1,5 @@
-import { USERS_LOADER } from "../users.loader";
-import { User } from "../user.model";
+import { USERS_LOADER } from "./users.loader";
+import { User } from "./user.model";
 
 export const usersLoaderProvider = {
   provide: USERS_LOADER,
