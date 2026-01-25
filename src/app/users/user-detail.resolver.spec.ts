@@ -9,13 +9,15 @@ import { vi } from 'vitest';
 import { USERS_LOADER } from './users.loader';
 
 describe('userDetailResolver', () => {
-  it('should select user from route param', () => {
+  it('should select user from route param', async () => {
     TestBed.configureTestingModule({
       providers: [
         UserStore,
         {
           provide: USERS_LOADER,
-          useValue: () => Promise.resolve([]), // 👈 fake minimal
+          useValue: {
+            load: () => Promise.resolve([])  // 👈 fake minimal
+          },
         },
       ],
     });
@@ -29,9 +31,9 @@ describe('userDetailResolver', () => {
 
     const state = {} as RouterStateSnapshot;
 
-    TestBed.runInInjectionContext(() => {
-      userDetailResolver(route, state);
-    });
+    await TestBed.runInInjectionContext(() =>
+      userDetailResolver(route, state)
+    );
 
     expect(spy).toHaveBeenCalledWith(42);
   });

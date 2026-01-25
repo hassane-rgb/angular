@@ -14,7 +14,9 @@ describe('UserStore', () => {
       providers: [
         {
           provide: USERS_LOADER,
-          useValue: () => Promise.resolve([user1, user2]),
+          useValue: {
+            load: () => Promise.resolve([user1, user2]),
+          },
         },
       ],
     });
@@ -114,7 +116,9 @@ describe('UserStore', () => {
       providers: [
         {
           provide: USERS_LOADER,
-          useValue: () => Promise.reject('boom'),
+          useValue: {
+            load: () => Promise.reject('boom')
+          },
         },
       ],
     });
