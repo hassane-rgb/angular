@@ -1,6 +1,6 @@
 import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { UserStore } from './user.store';
+import { UserStore } from './data/user.store';
 
 export const userDetailResolver: ResolveFn<void> = async (route) => {
   const store = inject(UserStore);

@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, effect, inject } from '@angular/core';
-import { User } from './user.model';
-import { USERS_LOADER } from './users.loader';
+import { User } from '../user.model';
+import { USERS_LOADER } from '../users.loader';
 
 const STORAGE_KEY = 'user-store';
 

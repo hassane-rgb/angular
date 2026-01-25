@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserStore } from './user.store';
+import { UserStore } from './data/user.store';
 
 @Component({
   selector: 'app-user-form',

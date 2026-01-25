@@ -4,7 +4,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { userDetailResolver } from './user-detail.resolver';
-import { UserStore } from './user.store';
+import { UserStore } from './data/user.store';
 import { vi } from 'vitest';
 import { USERS_LOADER } from './users.loader';
 

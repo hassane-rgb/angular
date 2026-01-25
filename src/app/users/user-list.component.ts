@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserFormComponent } from './user-form.component';
-import { UserStore } from './user.store';
+import { UserStore } from './data/user.store';
 
 @Component({
   selector: 'app-user-list',

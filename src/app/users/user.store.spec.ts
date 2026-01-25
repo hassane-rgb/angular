@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { UserStore } from './user.store';
+import { UserStore } from './data/user.store';
 import { User } from './user.model';
 import { USERS_LOADER } from './users.loader';
 

@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserStore } from './user.store';
+import { UserStore } from './data/user.store';
 
 @Component({
   selector: 'app-user-detail',
