@@ -1,22 +1,22 @@
-import { Component, inject, computed } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { UserStore } from '../../data/user.store';
+import { Component, input } from '@angular/core';
+import { User } from '../../data/user.model';
 
 @Component({
   selector: 'app-user-detail',
   standalone: true,
   template: `
-    <h2>User Detail</h2>
+    <h2>User detail</h2>
 
     @if (user()) {
       <p>Name: {{ user()!.name }}</p>
       <p>Email: {{ user()!.email }}</p>
     } @else {
-      <p>User not found</p>
+      <p>No user</p>
     }
   `
 })
+
 export class UserDetailComponent {
-  store = inject(UserStore);
-  user = this.store.selectedUser;
+  user = input<User | null>(null);
 }
+

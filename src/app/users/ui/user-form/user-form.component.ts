@@ -1,6 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserStore } from '../../data/user.store';
+import { Component, output } from '@angular/core';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormControl,
+  Validators
+} from '@angular/forms';
+import { User } from '../../data/user.model';
 
 @Component({
   selector: 'app-user-form',
@@ -20,16 +25,16 @@ import { UserStore } from '../../data/user.store';
         type="email"
         placeholder="Email"
         formControlName="email"
-         />
-        
-        <button type="submit" [disabled]="form.invalid">
-          Add
-        </button>
+      />
+
+      <button type="submit" [disabled]="form.invalid">
+        Add
+      </button>
     </form>
   `
 })
 export class UserFormComponent {
-  private store = inject(UserStore);
+  create = output<User>();
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -37,9 +42,11 @@ export class UserFormComponent {
   });
 
   submit() {
-    this.store.addUser({
+    if (this.form.invalid) return;
+
+    this.create.emit({
       id: Date.now(),
-      ...this.form.value as any
+      ...this.form.value as { name: string; email: string }
     });
 
     this.form.reset();

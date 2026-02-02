@@ -1,22 +1,24 @@
-import { Component, EventEmitter, inject, Input, Output, Signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { User } from '../../data/user.model';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   template: `
     <h2>Users</h2>
 
-    @if (users().length) {
+    @if (users().length > 0) {
       <ul>
         @for (user of users(); track user.id) {
-          <li>
-            <a [routerLink]="['/users', user.id]">
-              {{ user.name }} ({{ user.email }})
+          <li [class.selected]="user.id === selectedUserId()">
+            <a
+              (click)="select.emit(user.id)"
+            >
+              {{ user.name }}
             </a>
+
             <button (click)="remove.emit(user.id)">❌</button>
           </li>
         }
@@ -27,7 +29,9 @@ import { User } from '../../data/user.model';
   `
 })
 export class UserListComponent {
-  @Input({ required: true }) users!: Signal<User[]>;
-  @Output() remove = new EventEmitter<number>();
-}
+  users = input<User[]>([]);
+  selectedUserId = input<number | null>(null);
 
+  select = output<number>();
+  remove = output<number>();
+}
