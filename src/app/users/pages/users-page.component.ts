@@ -14,6 +14,16 @@ import { UserFormComponent } from '../ui/user-form/user-form.component';
   template: `
     <h1>Users ({{ store.usersCount() }})</h1>
 
+    @if (store.isLoading()) {
+      <p>⏳ Loading users...</p>
+    }
+
+    @if (store.hasError()) {
+      <p style="color: red">
+        ❌ {{ store.error() }}
+      </p>
+    }
+
     <app-user-form
       (create)="store.addUser($event)"
     />

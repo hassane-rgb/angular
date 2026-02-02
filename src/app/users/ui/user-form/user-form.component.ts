@@ -27,9 +27,13 @@ import { User } from '../../data/user.model';
         formControlName="email"
       />
 
-      <button type="submit" [disabled]="form.invalid">
+      <button
+        type="submit"
+        [disabled]="form.invalid"
+      >
         Add
       </button>
+
     </form>
   `
 })
