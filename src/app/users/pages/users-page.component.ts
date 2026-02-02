@@ -12,7 +12,7 @@ import { UserFormComponent } from '../ui/user-form/user-form.component';
     UserFormComponent
   ],
   template: `
-    <h1>Page Users</h1>
+    <h1>Users ({{ store.usersCount() }})</h1>
 
     <app-user-form
       (create)="store.addUser($event)"

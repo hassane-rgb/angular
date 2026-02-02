@@ -109,4 +109,27 @@ export class UserStore {
   clearSelection() {
     this._selectedUserId.set(null);
   }
+
+  // ===== UI-friendly computed selectors =====
+
+  readonly usersCount = computed(() => this._users().length);
+
+  readonly isEmpty = computed(() => this._users().length === 0);
+
+  readonly hasSelectedUser = computed(
+    () => this._selectedUserId() !== null
+  );
+
+  readonly selectedUserName = computed(() => {
+    const user = this.selectedUser();
+    return user ? user.name : null;
+  });
+
+  /**
+   * UX helper
+   * (utile plus tard pour désactiver le form si besoin)
+   */
+  readonly canAddUser = computed(() => {
+    return this._status() !== 'loading';
+  });
 }

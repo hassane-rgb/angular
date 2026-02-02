@@ -11,7 +11,7 @@ import { User } from '../../data/user.model';
       <p>Name: {{ user()!.name }}</p>
       <p>Email: {{ user()!.email }}</p>
     } @else {
-      <p>No user</p>
+      <p>No user selected</p>
     }
   `
 })
