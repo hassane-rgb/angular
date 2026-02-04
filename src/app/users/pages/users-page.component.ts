@@ -44,8 +44,6 @@ export class UsersPageComponent {
   store = inject(UserStore);
 
   ngOnInit() {
-    if (!this.store.hasUsers()) {
-      this.store.loadUsers();
-    }
+    this.store.init();
   }
 }

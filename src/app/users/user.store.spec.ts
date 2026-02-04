@@ -131,4 +131,17 @@ describe('UserStore', () => {
     expect(store.error()).toBe('Failed to load users');
     expect(store.users().length).toBe(0);
   });
+
+  it('should not reload users if already loading', async () => {
+    const spy = vi.spyOn(
+      TestBed.inject(USERS_LOADER),
+      'load'
+    );
+
+    store.loadUsers();
+    store.loadUsers();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
 });

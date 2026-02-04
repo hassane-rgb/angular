@@ -18,14 +18,18 @@ export class UserStore {
   private readonly _status = signal<Status>('idle');
   private readonly _error = signal<string | null>(null);
 
+  
 
   // ===== SELECTORS (computed) =====
   readonly users  = this._users.asReadonly();
   readonly status = this._status.asReadonly();
   readonly error  = this._error.asReadonly();
 
+  readonly isIdle    = computed(() => this._status() === 'idle');
   readonly isLoading = computed(() => this._status() === 'loading');
-  readonly hasError = computed(() => this._status() === 'error');
+  readonly isSuccess = computed(() => this._status() === 'success');
+  readonly isError   = computed(() => this._status() === 'error');
+  readonly hasError  = computed(() => this._status() === 'error');
   readonly selectedUser = computed<User | null>(() => {
     const id = this._selectedUserId();
     return id === null
@@ -35,7 +39,15 @@ export class UserStore {
   readonly hasUsers = computed(() => this._users().length > 0);
 
   // ===== actions =====
+  init() {
+    if (this._users().length === 0) {
+      this.loadUsers();
+    }
+  }
+
   async loadUsers() {
+    if (this._status() === 'loading') return;
+
     this._status.set('loading');
     this._error.set(null);
 
