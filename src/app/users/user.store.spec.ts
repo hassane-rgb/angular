@@ -1,22 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 import { UserStore } from './data/user.store';
 import { User } from './data/user.model';
-import { USERS_LOADER } from './data/users.loader';
+import { USERS_LOADER, UsersLoader } from './data/users.loader';
+
+const user1: User = { id: 1, name: 'Alice', email: 'alice@test.com' };
+const user2: User = { id: 2, name: 'Bob', email: 'bob@test.com' };
+
+class UsersLoaderMock implements UsersLoader{
+  load = vi.fn().mockResolvedValue([user1, user2,]);
+}
+
 
 describe('UserStore', () => {
   let store: UserStore;
-
-  const user1: User = { id: 1, name: 'Alice', email: 'alice@test.com' };
-  const user2: User = { id: 2, name: 'Bob', email: 'bob@test.com' };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         {
           provide: USERS_LOADER,
-          useValue: {
-            load: () => Promise.resolve([user1, user2]),
-          },
+          useClass: UsersLoaderMock,
         },
       ],
     });
