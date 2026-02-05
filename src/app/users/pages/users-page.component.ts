@@ -31,6 +31,7 @@ import { UserFormComponent } from '../ui/user-form/user-form.component';
     <app-user-list
       [users]="store.users()"
       [selectedUserId]="store.selectedUser()?.id ?? null"
+      [loading]="store.isLoading()"
       (select)="store.selectUser($event)"
       (remove)="store.removeUser($event)"
     />

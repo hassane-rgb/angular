@@ -9,28 +9,30 @@ import { User } from '../../data/user.model';
   template: `
     <h2>Users</h2>
 
-    @if (users().length > 0) {
+    @if (loading()) {
+      <p>Loading users...</p>
+    } @else if (users().length === 0) {
+      <p>No users yet</p>
+    } @else {
       <ul>
         @for (user of users(); track user.id) {
-          <li [class.selected]="user.id === selectedUserId()">
-            <a
-              (click)="select.emit(user.id)"
-            >
-              {{ user.name }}
-            </a>
-
-            <button (click)="remove.emit(user.id)">❌</button>
+          <li
+            [class.selected]="user.id === selectedUserId()"
+            (click)="select.emit(user.id)"
+          >
+            {{ user.name }}
+            <button (click)="remove.emit(user.id); $event.stopPropagation()">❌</button>
           </li>
         }
       </ul>
-    } @else {
-      <p>No users yet</p>
     }
+
   `
 })
 export class UserListComponent {
   users = input<User[]>([]);
   selectedUserId = input<number | null>(null);
+  loading = input<boolean>(false);
 
   select = output<number>();
   remove = output<number>();
