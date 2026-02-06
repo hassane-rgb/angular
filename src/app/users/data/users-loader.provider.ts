@@ -1,7 +1,7 @@
 import { USERS_LOADER } from './users.loader';
-import { UsersApiLoader } from './users.api-loader';
+import { UsersHttpLoader } from './users-http.loader';
 
 export const usersLoaderProvider = {
   provide: USERS_LOADER,
-  useClass: UsersApiLoader,
+  useClass: UsersHttpLoader,
 };
