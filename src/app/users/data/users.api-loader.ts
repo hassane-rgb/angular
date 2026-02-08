@@ -5,8 +5,8 @@ import { mapUserDto } from './user.mapper';
 export class UsersApiLoader implements UsersLoader {
   async load() {
     const response: UserDto[] = [
-      { id: 1, full_name: 'Alice', email_address: 'alice@test.com' },
-      { id: 2, full_name: 'Bob', email_address: 'bob@test.com' },
+      { id: "1", name: 'Alice', email: 'alice@test.com' },
+      { id: "2", name: 'Bob', email: 'bob@test.com' },
     ];
 
     return response.map(mapUserDto);
